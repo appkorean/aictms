@@ -82,3 +82,4 @@ You also need to add that logo.png inside of the `drawable` folder which is ment
 ## Downlaod
 
 You can download the `apk-release.apk`, for using this application.
+"# aictms" 
