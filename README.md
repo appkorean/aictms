@@ -53,7 +53,7 @@ Then import the following packages in `main.dart` file.
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/services.dart';
 import './theme_provider.dart';
 import 'package:provider/provider.dart';

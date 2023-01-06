@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:barcode_scan/barcode_scan.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/services.dart';
 import './theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(
@@ -47,12 +49,25 @@ class HomePageState extends State<HomePage> {
   TapGestureRecognizer _flutterTapRecognizer;
   Future _scanQR() async {
     try {
-      String qrResult = await BarcodeScanner.scan();
+      var qrResult = await BarcodeScanner.scan();
+      String url = "https://aictms.or.kr/app/users.json";
+      var response = await http.get(Uri.parse(url));
+      //var statusCode = response.statusCode;
+      //var responseHeaders = response.headers;
+      var responseBody = response.body;
+      var udata = jsonDecode(responseBody)['users'][0]['userId'];
+
+
+
+
       setState(() {
-        result = qrResult;
+        result = udata.toString();
+        //result = qrResult.rawContent;//url등
+        //result = qrResult.type.toString();barcode
+        //result = qrResult.format.toString();qr
       });
     } on PlatformException catch (ex) {
-      if (ex.code == BarcodeScanner.CameraAccessDenied) {
+      if (ex.code == BarcodeScanner.cameraAccessDenied) {
         setState(() {
           result = "CAMERA permission denied!";
         });
@@ -104,17 +119,12 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<DynamicTheme>(context);
     if (result != "a") {
-      Clipboard.setData(
+      /*Clipboard.setData(
         ClipboardData(text: result),
-      );
+      );*/
       setState(() {
         resultScanned = true;
       });
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          content: Text('Result copied to clipboard.'),
-        ),
-      );
     } else {
       // setState(() {
       //   resultScanned = false;
@@ -237,7 +247,7 @@ class HomePageState extends State<HomePage> {
                     ],
                   ),
                   actions: <Widget>[
-                    new FlatButton(
+                    new MaterialButton(
                       onPressed: () {
                         Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
